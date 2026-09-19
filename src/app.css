@@ -1,0 +1,480 @@
+/* Screen styles for the Stock Entry Journal. The look comes from the Nocturne
+   design system (design/_ds/…/styles.css) — this file only lays out the screens
+   and names the values the design used inline. */
+
+:root {
+  --backdrop: #101220;
+  --up: #7fd1a8;
+  --down: #e08a8a;
+  --app-max: 440px;
+  --pad: 16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--backdrop);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* ── shell ──────────────────────────────────────────────────────────
+   Full-bleed on a phone; a centred column with the backdrop showing
+   through on anything wider. */
+.app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+@media (min-width: 520px) {
+  .app {
+    height: min(100%, 900px);
+    margin: clamp(0px, calc((100vh - 900px) / 2), 40px) auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ── list header ───────────────────────────────────────────────── */
+.list-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: calc(20px + var(--safe-top)) var(--pad) 10px;
+}
+
+.kicker {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-500);
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.chiprow {
+  display: flex;
+  gap: 6px;
+  padding: 0 var(--pad) 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chiprow::-webkit-scrollbar {
+  height: 0;
+}
+
+/* A pill that reads as on/off: filter chips, status picker, market picker. */
+.pick {
+  flex: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-neutral-400);
+  border: 1px solid var(--color-divider);
+}
+
+.pick:hover {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.pick[aria-pressed="true"] {
+  background: var(--color-accent-800);
+  color: var(--color-accent-100);
+  border-color: var(--color-accent-500);
+}
+
+.pick-wide {
+  flex: 1;
+  padding: 7px 4px;
+  font-size: 11px;
+}
+
+.pick-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── ticker cards ──────────────────────────────────────────────── */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 2px var(--pad) 96px;
+}
+
+.tcard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  background: var(--color-surface);
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.tcard:hover {
+  box-shadow: 0 0 0 1px var(--color-neutral-700);
+}
+
+.tcard-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tcard-id {
+  flex: 1;
+  min-width: 0;
+}
+
+.symbol-row {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.symbol {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.market {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.coname {
+  font-size: 12px;
+  color: var(--color-neutral-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price-col {
+  text-align: right;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.chg {
+  font-size: 12px;
+}
+
+.chg.up {
+  color: var(--up);
+}
+
+.chg.down {
+  color: var(--down);
+}
+
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meter {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-accent-900);
+  overflow: hidden;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-accent-500);
+}
+
+.meter-label {
+  flex: none;
+  font-size: 11px;
+  color: var(--color-neutral-400);
+}
+
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pchip {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-neutral-500);
+}
+
+.pchip.met {
+  background: var(--color-accent-900);
+  color: var(--color-accent-300);
+}
+
+.empty {
+  padding: 40px 8px;
+  text-align: center;
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+/* ── bottom action bar ─────────────────────────────────────────── */
+.bottom-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px var(--pad) calc(16px + var(--safe-bottom));
+  background: linear-gradient(to top, var(--color-bg) 60%, transparent);
+}
+
+.bottom-bar .btn {
+  height: 44px;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ── detail / form ─────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(18px + var(--safe-top)) var(--pad) 10px;
+}
+
+.topbar .btn {
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+.pane {
+  padding: 0 var(--pad) 40px;
+}
+
+.detail-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.detail-symbol {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.detail-sub {
+  font-size: 12px;
+  color: var(--color-neutral-500);
+}
+
+.detail-price {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.detail-chg {
+  font-size: 13px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+h6.section-title {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  font-weight: inherit;
+}
+
+.section-count {
+  font-size: 11px;
+  color: var(--color-accent-500);
+  margin-left: auto;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 10px 11px;
+}
+
+.row-text {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+
+.row-label {
+  flex: none;
+  width: 96px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.check {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 24%, transparent);
+  background: transparent;
+  color: var(--color-bg);
+  cursor: pointer;
+}
+
+.check[aria-checked="true"] {
+  border-color: var(--color-accent-500);
+  background: var(--color-accent-500);
+}
+
+.icon-btn {
+  flex: none;
+  padding: 2px;
+  display: flex;
+  background: transparent;
+  border: 0;
+  color: var(--color-neutral-600);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  color: var(--color-text);
+}
+
+.add-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+
+.add-row .btn {
+  flex: none;
+}
+
+.field-label {
+  width: 110px;
+  flex: none;
+}
+
+.form-field {
+  margin-bottom: 12px;
+}
+
+.form-title {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.save-row {
+  margin-top: 20px;
+}
+
+.save-row .btn {
+  height: 44px;
+  font-size: 15px;
+}
+
+.danger {
+  color: var(--down);
+}
+
+.danger:hover {
+  background: color-mix(in srgb, var(--down) 12%, transparent);
+}

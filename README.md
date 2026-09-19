@@ -1,43 +1,85 @@
 # Stock Entry Journal
 
-A mobile entry-journal screen for tracking tickers against your own entry rules —
-imported from the [Claude Design project](https://claude.ai/design/p/13d35b40-011c-452d-b790-ce640ba45582).
+A mobile-first web app for tracking tickers against your own entry rules, instead of
+buying on a hunch. Built from the
+[Claude Design project](https://claude.ai/design/p/13d35b40-011c-452d-b790-ce640ba45582)
+kept in [`design/`](#design-source).
 
-Three screens, all in one declarative-component page:
-
-- **Watchlist** — cards per ticker with price, change, a readiness bar (`met/total`
-  entry conditions) and a status tag. Filter by status, cycle the sort between
+- **Watchlist** — a card per ticker with price, change, a readiness bar (`met/total`
+  entry conditions ticked) and a status tag. Filter by status, cycle the sort between
   Readiness / Symbol / Change.
-- **Detail** — set status, tick off or remove entry conditions, add new ones, keep
-  fundamentals & catalysts as label/value rows, and a free-text note.
-- **New ticker** — symbol, name, market (SET / US / Crypto), reference price and a
-  first entry condition.
+- **Ticker detail** — set the status, tick off, add and remove entry conditions, keep
+  fundamentals & catalysts as label/value rows, and write a free note. Removing the
+  ticker asks first.
+- **New ticker** — symbol, name, market (SET / US / Crypto), reference price and a first
+  entry condition. The symbol is upper-cased and the price accepts `1,240`.
 
-State lives in the component and resets on reload; there is no persistence layer yet.
-
-## Files
-
-| Path | What it is |
-| --- | --- |
-| `Stock Entry Journal.dc.html` | The page: `<x-dc>` template (`sc-if` / `sc-for` bindings) plus the `DCLogic` component that holds state and computes render values. |
-| `support.js` | The dc-runtime that compiles `<x-dc>` into React. Generated — do not edit. |
-| `ios-frame.jsx` | iOS device frame (bezel, status bar, home indicator), exported to the global scope as `IOSDevice` and pulled in via `<x-import>`. |
-| `_ds/nocturne-4c471785-2541-4499-9f02-478487a1a07f/styles.css` | Nocturne design-system tokens and component classes (`.btn`, `.input`, `.field`, `.tag`). Source of truth for the look. |
-| `_ds/nocturne-4c471785-2541-4499-9f02-478487a1a07f/_ds_bundle.js` | Nocturne's JS bundle. CSS-only system, so it just registers the namespace. |
+Everything is stored in the browser's `localStorage` under `stockm.journal.v1` — no
+account, no server, and nothing leaves the device. The first visit is seeded with four
+example tickers.
 
 ## Running it
 
-`support.js` fetches `ios-frame.jsx` at runtime, so opening the file over `file://`
-will not work — serve the directory instead:
-
 ```bash
-python3 -m http.server 8000
-# → http://localhost:8000/Stock%20Entry%20Journal.dc.html
+npm install
+npm run dev        # http://localhost:5173
 ```
 
-Three things load from the network on first paint:
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Vite dev server with hot reload |
+| `npm run build` | Typechecks, then builds static files into `dist/` |
+| `npm run preview` | Serves the production build locally |
+| `npm run typecheck` | `tsc --noEmit` on its own |
 
-- React 18.3.1, ReactDOM 18.3.1 and Babel standalone 7.29.0, fetched from unpkg by
-  `support.js` (with SRI) — Babel compiles `ios-frame.jsx` in the browser.
-- Phosphor icons 2.1.1 (`regular` + `bold`), linked from unpkg.
-- Inter 400/500/600/700, imported from Google Fonts by `styles.css`.
+`dist/` is a plain static bundle with relative asset paths, so it can be hosted from any
+directory — GitHub Pages, Netlify, an S3 bucket, or opened through any local file server.
+Inter is pulled from Google Fonts by the design system stylesheet; everything else is
+bundled.
+
+## Layout
+
+```
+index.html            Vite entry
+src/
+  main.tsx            mounts App, imports the design system + screen styles
+  App.tsx             routing, filter and sort state
+  router.ts           hash routing (#/, #/t/<id>, #/new) so Back walks the screens
+  store.ts            useJournal() — the ticker list and every mutation, persisted
+  types.ts            Stock/Condition/Fact, plus price, change and readiness formatting
+  seed.ts             first-run example tickers
+  app.css             screen layout and the app shell
+  screens/            Watchlist, TickerDetail, NewTicker
+design/               the Claude Design project this was built from
+```
+
+The visual language — colours, type, radii, shadows, and the `.btn` / `.input` / `.field`
+/ `.tag` classes — comes from the Nocturne design system in
+`design/_ds/nocturne-…/styles.css`, which `main.tsx` imports directly. That file stays the
+single source of truth for the look: retune it there and the app follows. Icons are
+Phosphor, imported as React components so only the handful in use gets bundled.
+
+<a id="design-source"></a>
+
+## Design source
+
+`design/` holds the original Claude Design project, unchanged and still openable on its
+own:
+
+| Path | What it is |
+| --- | --- |
+| `Stock Entry Journal.dc.html` | The design page: an `<x-dc>` template with `sc-if` / `sc-for` bindings plus a `DCLogic` class. |
+| `support.js` | The dc-runtime that compiles that template into React. Generated — do not edit. |
+| `ios-frame.jsx` | iOS device frame the design is previewed inside. |
+| `_ds/nocturne-…/styles.css` | Nocturne tokens and component classes. |
+| `_ds/nocturne-…/_ds_bundle.js` | Nocturne's JS bundle — CSS-only system, so it just registers the namespace. |
+
+It needs a server rather than `file://`, because the runtime fetches `ios-frame.jsx`:
+
+```bash
+npx vite preview --outDir design   # or any static server rooted at design/
+```
+
+The app deliberately drops the iOS bezel and fake status bar that the design previews
+inside, and is responsive instead: full-bleed on a phone, a centred column on anything
+wider.
