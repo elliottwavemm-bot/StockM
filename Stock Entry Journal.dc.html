@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="support.js"></script>
+<script src="ios-frame.jsx" type="text/plain"></script>
+
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-4c471785-2541-4499-9f02-478487a1a07f/styles.css">
+<script src="_ds/nocturne-4c471785-2541-4499-9f02-478487a1a07f/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<style>
+body{margin:0;background:#101220}
+input,textarea,button{font-family:inherit}
+.scroll::-webkit-scrollbar{width:0;height:0}
+.scroll,.chiprow{scrollbar-width:none}
+.chiprow::-webkit-scrollbar{height:0}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px;background:#101220">
+<x-import component-from-global-scope="IOSDevice" from="ios-frame.jsx" dark="{{ true }}" hint-size="393px,852px">
+<div style="height:100%;display:flex;flex-direction:column;background:#161826;color:#e9e9ed;font-family:Inter,system-ui,sans-serif">
+
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;height:100%;min-height:0">
+  <div style="padding:60px 16px 10px;display:flex;align-items:flex-end;gap:10px">
+    <div style="flex:1">
+      <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#968ae0">Entry journal</div>
+      <div style="font-size:26px;font-weight:500;letter-spacing:-.02em;line-height:1.15">Watchlist</div>
+    </div>
+    <button class="btn btn-secondary" style="height:34px;gap:6px;font-size:12px" sc-camel-on-click="{{ cycleSort }}"><i class="ph-bold ph-arrows-down-up"></i>{{ sortLabel }}</button>
+  </div>
+
+  <div class="chiprow" style="padding:0 16px 10px;display:flex;gap:6px;overflow-x:auto">
+    <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+      <sc-if value="{{ f.active }}" hint-placeholder-val="{{ false }}">
+        <button style="flex:none;padding:6px 12px;font-size:12px;border-radius:8px;cursor:pointer;background:#423a6a;color:#f5f4ff;border:1px solid #968ae0" sc-camel-on-click="{{ f.onClick }}">{{ f.label }} {{ f.count }}</button>
+      </sc-if>
+      <sc-if value="{{ f.idle }}" hint-placeholder-val="{{ true }}">
+        <button style="flex:none;padding:6px 12px;font-size:12px;border-radius:8px;cursor:pointer;background:transparent;color:#b2b6ca;border:1px solid rgba(233,233,237,.16)" sc-camel-on-click="{{ f.onClick }}">{{ f.label }} {{ f.count }}</button>
+      </sc-if>
+    </sc-for>
+  </div>
+
+  <div class="scroll" style="flex:1;min-height:0;overflow-y:auto;padding:2px 16px 96px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ items }}" as="s" hint-placeholder-count="4">
+      <div style="background:#232532;border-radius:8px;box-shadow:0 0 0 1px #3f424d;padding:12px;display:flex;flex-direction:column;gap:9px;cursor:pointer" sc-camel-on-click="{{ s.onOpen }}">
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:baseline;gap:7px">
+              <span style="font-size:18px;font-weight:600;letter-spacing:-.01em">{{ s.ticker }}</span>
+              <span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#75798c">{{ s.market }}</span>
+            </div>
+            <div style="font-size:12px;color:#9397ab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:15px;font-weight:500">{{ s.priceLabel }}</div>
+            <sc-if value="{{ s.up }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#7fd1a8">{{ s.chgLabel }}</div></sc-if>
+            <sc-if value="{{ s.down }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#e08a8a">{{ s.chgLabel }}</div></sc-if>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;height:4px;border-radius:999px;background:#2b2741;overflow:hidden">
+            <div style="height:100%;background:#968ae0;border-radius:999px;width:{{ s.pct }}%"></div>
+          </div>
+          <span style="font-size:11px;color:#b2b6ca;flex:none">{{ s.metLabel }} rules</span>
+          <span class="tag tag-neutral" style="flex:none">{{ s.status }}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <sc-for list="{{ s.preview }}" as="c" hint-placeholder-count="2">
+            <sc-if value="{{ c.met }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:#2b2741;color:#d2cefd">✓ {{ c.text }}</span>
+            </sc-if>
+            <sc-if value="{{ c.open }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(233,233,237,.06);color:#9397ab">{{ c.text }}</span>
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:40px 8px;text-align:center;color:#75798c;font-size:13px">No tickers in this stage yet.</div>
+    </sc-if>
+  </div>
+
+  <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 30px;background:linear-gradient(to top,#161826 60%,rgba(22,24,38,0))">
+    <button class="btn btn-primary btn-block" style="height:44px;font-size:15px;margin:0" sc-camel-on-click="{{ openAdd }}"><i class="ph-bold ph-plus"></i>Add ticker</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;height:100%;min-height:0">
+  <div style="padding:58px 16px 10px;display:flex;align-items:center;gap:10px">
+    <button class="btn btn-ghost" style="padding:4px 6px;font-size:13px" sc-camel-on-click="{{ back }}"><i class="ph-bold ph-caret-left"></i>Watchlist</button>
+  </div>
+  <div class="scroll" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 40px">
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px">
+      <div style="flex:1">
+        <div style="font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.1">{{ sel.ticker }}</div>
+        <div style="font-size:12px;color:#9397ab">{{ sel.name }} · {{ sel.market }}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:500">{{ sel.priceLabel }}</div>
+        <sc-if value="{{ sel.up }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px;color:#7fd1a8">{{ sel.chgLabel }}</div></sc-if>
+        <sc-if value="{{ sel.down }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#e08a8a">{{ sel.chgLabel }}</div></sc-if>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:6px;margin-bottom:16px">
+      <sc-for list="{{ statusOpts }}" as="o" hint-placeholder-count="4">
+        <sc-if value="{{ o.active }}" hint-placeholder-val="{{ false }}">
+          <button style="flex:1;padding:7px 4px;font-size:11px;border-radius:8px;cursor:pointer;background:#423a6a;color:#f5f4ff;border:1px solid #968ae0" sc-camel-on-click="{{ o.onClick }}">{{ o.label }}</button>
+        </sc-if>
+        <sc-if value="{{ o.idle }}" hint-placeholder-val="{{ true }}">
+          <button style="flex:1;padding:7px 4px;font-size:11px;border-radius:8px;cursor:pointer;background:transparent;color:#b2b6ca;border:1px solid rgba(233,233,237,.16)" sc-camel-on-click="{{ o.onClick }}">{{ o.label }}</button>
+        </sc-if>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+      <h6 style="margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9397ab">Entry conditions</h6>
+      <span style="font-size:11px;color:#968ae0;margin-left:auto">{{ sel.metLabel }} met</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+      <sc-for list="{{ sel.conds }}" as="c" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:10px;background:#232532;border-radius:8px;padding:10px 11px">
+          <sc-if value="{{ c.met }}" hint-placeholder-val="{{ false }}">
+            <button style="width:20px;height:20px;flex:none;border-radius:6px;border:1px solid #968ae0;background:#968ae0;color:#161826;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px" sc-camel-on-click="{{ c.onToggle }}"><i class="ph-bold ph-check"></i></button>
+          </sc-if>
+          <sc-if value="{{ c.open }}" hint-placeholder-val="{{ true }}">
+            <button style="width:20px;height:20px;flex:none;border-radius:6px;border:1px solid rgba(233,233,237,.24);background:transparent;cursor:pointer" sc-camel-on-click="{{ c.onToggle }}"></button>
+          </sc-if>
+          <span style="flex:1;font-size:13.5px;line-height:1.35">{{ c.text }}</span>
+          <button style="flex:none;background:transparent;border:0;color:#75798c;cursor:pointer;font-size:14px;padding:2px" sc-camel-on-click="{{ c.onRemove }}"><i class="ph ph-x"></i></button>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:22px">
+      <input class="input" placeholder="e.g. breaks 1,240 on volume" value="{{ newCond }}" sc-camel-on-change="{{ onNewCond }}" sc-camel-on-key-down="{{ onCondKey }}">
+      <button class="btn btn-primary" style="flex:none" sc-camel-on-click="{{ addCond }}"><i class="ph-bold ph-plus"></i></button>
+    </div>
+
+    <h6 style="margin:0 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9397ab">Fundamentals &amp; catalysts</h6>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+      <sc-for list="{{ sel.facts }}" as="f" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:10px;background:#232532;border-radius:8px;padding:10px 11px">
+          <span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#75798c;flex:none;width:96px">{{ f.label }}</span>
+          <span style="flex:1;font-size:13.5px;line-height:1.35">{{ f.value }}</span>
+          <button style="flex:none;background:transparent;border:0;color:#75798c;cursor:pointer;font-size:14px;padding:2px" sc-camel-on-click="{{ f.onRemove }}"><i class="ph ph-x"></i></button>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:22px">
+      <input class="input" style="width:110px;flex:none" placeholder="Factor" value="{{ newFactLabel }}" sc-camel-on-change="{{ onNewFactLabel }}">
+      <input class="input" placeholder="Value or note" value="{{ newFactValue }}" sc-camel-on-change="{{ onNewFactValue }}" sc-camel-on-key-down="{{ onFactKey }}">
+      <button class="btn btn-primary" style="flex:none" sc-camel-on-click="{{ addFact }}"><i class="ph-bold ph-plus"></i></button>
+    </div>
+
+    <h6 style="margin:0 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9397ab">Free note</h6>
+    <textarea class="input" style="min-height:76px" placeholder="Thesis, risk, what would invalidate it…" value="{{ sel.note }}" sc-camel-on-change="{{ onNote }}"></textarea>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;height:100%;min-height:0">
+  <div style="padding:58px 16px 10px;display:flex;align-items:center;gap:10px">
+    <button class="btn btn-ghost" style="padding:4px 6px;font-size:13px" sc-camel-on-click="{{ back }}"><i class="ph-bold ph-caret-left"></i>Cancel</button>
+  </div>
+  <div class="scroll" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 40px">
+    <div style="font-size:26px;font-weight:500;letter-spacing:-.02em;margin-bottom:16px">New ticker</div>
+    <div class="field" style="margin-bottom:12px"><label>Symbol</label><input class="input" placeholder="NVDA" value="{{ draftTicker }}" sc-camel-on-change="{{ onDraftTicker }}"></div>
+    <div class="field" style="margin-bottom:12px"><label>Company / asset name</label><input class="input" placeholder="NVIDIA Corp" value="{{ draftName }}" sc-camel-on-change="{{ onDraftName }}"></div>
+    <div class="field" style="margin-bottom:12px"><label>Market</label>
+      <div style="display:flex;gap:6px">
+        <sc-for list="{{ marketOpts }}" as="m" hint-placeholder-count="3">
+          <sc-if value="{{ m.active }}" hint-placeholder-val="{{ false }}">
+            <button style="flex:1;padding:8px 4px;font-size:12px;border-radius:8px;cursor:pointer;background:#423a6a;color:#f5f4ff;border:1px solid #968ae0" sc-camel-on-click="{{ m.onClick }}">{{ m.label }}</button>
+          </sc-if>
+          <sc-if value="{{ m.idle }}" hint-placeholder-val="{{ true }}">
+            <button style="flex:1;padding:8px 4px;font-size:12px;border-radius:8px;cursor:pointer;background:transparent;color:#b2b6ca;border:1px solid rgba(233,233,237,.16)" sc-camel-on-click="{{ m.onClick }}">{{ m.label }}</button>
+          </sc-if>
+        </sc-for>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px"><label>Reference price</label><input class="input" placeholder="1,240" value="{{ draftPrice }}" sc-camel-on-change="{{ onDraftPrice }}"></div>
+    <div class="field" style="margin-bottom:20px"><label>First entry condition</label><input class="input" placeholder="RSI back above 50" value="{{ draftCond }}" sc-camel-on-change="{{ onDraftCond }}"></div>
+    <button class="btn btn-primary btn-block" style="height:44px;font-size:15px" sc-camel-on-click="{{ saveDraft }}">Save to watchlist</button>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:520,&quot;height&quot;:980}}">
+const uid = () => Math.random().toString(36).slice(2, 9);
+const STATUSES = ["Watching", "Ready", "Holding", "Sold"];
+const MARKETS = ["SET", "US", "Crypto"];
+const SORTS = ["Readiness", "Symbol", "Change"];
+
+class Component extends DCLogic {
+  state = {
+    screen: "list", openId: "nvda", filter: "All", sortIdx: 0,
+    newCond: "", newFactLabel: "", newFactValue: "",
+    draft: { ticker: "", name: "", market: "US", price: "", cond: "" },
+    stocks: [
+      { id: "nvda", ticker: "NVDA", name: "NVIDIA Corp", market: "US", price: 184.2, change: 2.41, status: "Watching",
+        conds: [
+          { id: uid(), text: "Holds 176 support on retest", met: true },
+          { id: uid(), text: "RSI(14) back above 50", met: true },
+          { id: uid(), text: "MACD cross on daily", met: false },
+          { id: uid(), text: "Breaks 190 resistance with volume", met: false }
+        ],
+        facts: [
+          { id: uid(), label: "Catalyst", value: "GTC keynote, March" },
+          { id: uid(), label: "News", value: "Hyperscaler capex guidance raised" },
+          { id: uid(), label: "My factor", value: "Supply chain checks positive" }
+        ],
+        note: "Size at 1/3 first. Invalidated below 168 weekly close." },
+      { id: "advanc", ticker: "ADVANC", name: "Advanced Info Service", market: "SET", price: 276, change: -0.72, status: "Holding",
+        conds: [
+          { id: uid(), text: "Above 270 support", met: true },
+          { id: uid(), text: "Dividend announcement confirmed", met: true },
+          { id: uid(), text: "Volume above 20d average", met: true }
+        ],
+        facts: [{ id: uid(), label: "Catalyst", value: "Ex-div 14 Apr" }],
+        note: "Core holding. Add only on 262 retest." },
+      { id: "btc", ticker: "BTC", name: "Bitcoin", market: "Crypto", price: 71400, change: 4.18, status: "Ready",
+        conds: [
+          { id: uid(), text: "Reclaims 70k resistance", met: true },
+          { id: uid(), text: "Daily close above 200MA", met: true },
+          { id: uid(), text: "Funding rate not overheated", met: false }
+        ],
+        facts: [{ id: uid(), label: "News", value: "ETF net inflow 4 days running" }],
+        note: "" },
+      { id: "delta", ticker: "DELTA", name: "Delta Electronics (TH)", market: "SET", price: 118.5, change: -1.94, status: "Watching",
+        conds: [
+          { id: uid(), text: "Base above 112", met: false },
+          { id: uid(), text: "MACD histogram turns up", met: false }
+        ],
+        facts: [{ id: uid(), label: "Risk", value: "Valuation rich vs sector" }],
+        note: "" }
+    ]
+  };
+
+  set = (p) => this.setState(p);
+  patch(id, fn) {
+    this.setState(s => ({ stocks: s.stocks.map(x => x.id === id ? fn(x) : x) }));
+  }
+  fmt(n) { return n >= 1000 ? n.toLocaleString(undefined, { maximumFractionDigits: 0 }) : n.toFixed(2); }
+
+  decorate(s) {
+    const total = s.conds.length, met = s.conds.filter(c => c.met).length;
+    return Object.assign({}, s, {
+      priceLabel: this.fmt(s.price),
+      chgLabel: (s.change >= 0 ? "+" : "") + s.change.toFixed(2) + "%",
+      up: s.change >= 0, down: s.change < 0,
+      pct: total ? Math.round(met / total * 100) : 0,
+      met, total, metLabel: met + "/" + total,
+      preview: s.conds.slice(0, 3).map(c => ({ text: c.text, met: c.met, open: !c.met })),
+      onOpen: () => this.set({ screen: "detail", openId: s.id })
+    });
+  }
+
+  renderVals() {
+    const st = this.state;
+    const sort = SORTS[st.sortIdx];
+    let list = st.stocks.map(s => this.decorate(s));
+    if (st.filter !== "All") list = list.filter(s => s.status === st.filter);
+    list.sort((a, b) => sort === "Symbol" ? a.ticker.localeCompare(b.ticker)
+      : sort === "Change" ? b.change - a.change
+      : (b.pct - a.pct) || (b.met - a.met));
+
+    const filters = ["All"].concat(STATUSES).map(label => ({
+      label, count: label === "All" ? st.stocks.length : st.stocks.filter(s => s.status === label).length,
+      active: st.filter === label, idle: st.filter !== label,
+      onClick: () => this.set({ filter: label })
+    }));
+
+    const raw = st.stocks.find(s => s.id === st.openId);
+    const id = st.openId;
+    const sel = raw ? Object.assign(this.decorate(raw), {
+      conds: raw.conds.map(c => ({
+        text: c.text, met: c.met, open: !c.met,
+        onToggle: () => this.patch(id, x => Object.assign({}, x, { conds: x.conds.map(k => k.id === c.id ? Object.assign({}, k, { met: !k.met }) : k) })),
+        onRemove: () => this.patch(id, x => Object.assign({}, x, { conds: x.conds.filter(k => k.id !== c.id) }))
+      })),
+      facts: raw.facts.map(f => ({
+        label: f.label, value: f.value,
+        onRemove: () => this.patch(id, x => Object.assign({}, x, { facts: x.facts.filter(k => k.id !== f.id) }))
+      }))
+    }) : {};
+
+    const addCond = () => {
+      const t = st.newCond.trim(); if (!t) return;
+      this.patch(id, x => Object.assign({}, x, { conds: x.conds.concat({ id: uid(), text: t, met: false }) }));
+      this.set({ newCond: "" });
+    };
+    const addFact = () => {
+      const l = st.newFactLabel.trim(), v = st.newFactValue.trim(); if (!l && !v) return;
+      this.patch(id, x => Object.assign({}, x, { facts: x.facts.concat({ id: uid(), label: l || "Note", value: v }) }));
+      this.set({ newFactLabel: "", newFactValue: "" });
+    };
+    const d = st.draft;
+    const setDraft = (k) => (e) => this.setState(s => ({ draft: Object.assign({}, s.draft, { [k]: e.target.value }) }));
+
+    return {
+      isList: st.screen === "list", isDetail: st.screen === "detail" && !!raw, isAdd: st.screen === "add",
+      items: list, empty: list.length === 0, filters, sel,
+      sortLabel: sort, cycleSort: () => this.setState(s => ({ sortIdx: (s.sortIdx + 1) % SORTS.length })),
+      back: () => this.set({ screen: "list" }),
+      openAdd: () => this.set({ screen: "add" }),
+      statusOpts: STATUSES.map(label => ({
+        label, active: raw && raw.status === label, idle: !raw || raw.status !== label,
+        onClick: () => this.patch(id, x => Object.assign({}, x, { status: label }))
+      })),
+      newCond: st.newCond, onNewCond: (e) => this.set({ newCond: e.target.value }),
+      onCondKey: (e) => { if (e.key === "Enter") addCond(); },
+      addCond,
+      newFactLabel: st.newFactLabel, newFactValue: st.newFactValue,
+      onNewFactLabel: (e) => this.set({ newFactLabel: e.target.value }),
+      onNewFactValue: (e) => this.set({ newFactValue: e.target.value }),
+      onFactKey: (e) => { if (e.key === "Enter") addFact(); },
+      addFact,
+      onNote: (e) => { const v = e.target.value; this.patch(id, x => Object.assign({}, x, { note: v })); },
+      draftTicker: d.ticker, draftName: d.name, draftPrice: d.price, draftCond: d.cond,
+      onDraftTicker: setDraft("ticker"), onDraftName: setDraft("name"),
+      onDraftPrice: setDraft("price"), onDraftCond: setDraft("cond"),
+      marketOpts: MARKETS.map(label => ({
+        label, active: d.market === label, idle: d.market !== label,
+        onClick: () => this.setState(s => ({ draft: Object.assign({}, s.draft, { market: label }) }))
+      })),
+      saveDraft: () => {
+        const t = (d.ticker || "").trim().toUpperCase(); if (!t) return;
+        const nid = uid();
+        this.setState(s => ({
+          stocks: s.stocks.concat({
+            id: nid, ticker: t, name: d.name || "—", market: d.market,
+            price: parseFloat(String(d.price).replace(/,/g, "")) || 0, change: 0, status: "Watching",
+            conds: d.cond ? [{ id: uid(), text: d.cond, met: false }] : [],
+            facts: [], note: ""
+          }),
+          draft: { ticker: "", name: "", market: "US", price: "", cond: "" },
+          screen: "detail", openId: nid, filter: "All"
+        }));
+      }
+    };
+  }
+}
+</script>
+
+
+</body></html>
