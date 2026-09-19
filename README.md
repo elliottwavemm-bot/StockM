@@ -18,6 +18,8 @@ Everything is stored in the browser's `localStorage` under `stockm.journal.v1` �
 account, no server, and nothing leaves the device. The first visit is seeded with four
 example tickers.
 
+**Live: https://elliottwavemm-bot.github.io/StockM/**
+
 It installs as a PWA: add it to the home screen and it opens standalone, with no browser
 chrome, and works with no connection at all.
 
@@ -56,12 +58,27 @@ The parts that make it installable:
 | `public/icon.svg` | The source icon. `icon-192.png`, `icon-512.png` and `apple-touch-icon.png` are rendered from it. |
 
 A service worker needs an `https://` origin (or `localhost`), and browsers block it inside
-a sandboxed preview frame — so install and offline only apply once the build is hosted on
-its own origin. `npm run preview` on localhost is enough to exercise it locally.
+a sandboxed preview frame. Install and offline therefore work on the Pages URL above and
+on `npm run preview` at localhost — but not through an embed or preview frame, where the
+browser also reads the *framing* page's icons instead of the app's.
+
+## Deployment
+
+`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on every push to
+`claude/test-eavkc0`, and can be run by hand from the Actions tab. The app's `base: "./"`
+means the `/StockM/` subpath needs no special handling, and hash routing means Pages needs
+no rewrite rules.
+
+One setting has to be right, once: **Settings → Pages → Build and deployment → Source**
+must be **GitHub Actions**. If it is left on "Deploy from a branch", the `build` job still
+succeeds and uploads the artifact, but the `deploy` job is rejected before it starts — it
+fails in about a second with no steps and no log, which is the signature of that
+misconfiguration rather than of a broken build.
 
 ## Layout
 
 ```
+.github/workflows/    Pages deployment
 index.html            Vite entry
 src/
   main.tsx            mounts App, imports the design system + screen styles
