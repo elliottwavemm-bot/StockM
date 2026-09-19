@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { CaretLeft, Check, Plus, Trash, X } from "@phosphor-icons/react";
+import { useCopy } from "../copy";
 import { go } from "../router";
+import { fullEntry } from "../share";
+import { useLongPress } from "../useLongPress";
 import type { Journal } from "../store";
 import { fmtChange, fmtPrice, readiness, STATUSES, type Stock } from "../types";
 
@@ -9,7 +12,20 @@ interface Props {
   journal: Journal;
 }
 
+/** A detail row that copies its own text when held. */
+function HoldRow({ copyText, children }: { copyText: string; children: React.ReactNode }) {
+  const copy = useCopy();
+  const hold = useLongPress(() => copy(copyText));
+  return (
+    <div className="row holdable" {...hold}>
+      {children}
+    </div>
+  );
+}
+
 export default function TickerDetail({ stock, journal }: Props) {
+  const copy = useCopy();
+  const holdHead = useLongPress(() => copy(fullEntry(stock), `${stock.ticker} entry`));
   const [newCond, setNewCond] = useState("");
   const [factLabel, setFactLabel] = useState("");
   const [factValue, setFactValue] = useState("");
@@ -56,7 +72,7 @@ export default function TickerDetail({ stock, journal }: Props) {
 
       <div className="scroll">
         <div className="pane">
-          <div className="detail-head">
+          <div className="detail-head holdable" {...holdHead}>
             <div style={{ flex: 1 }}>
               <div className="detail-symbol">{stock.ticker}</div>
               <div className="detail-sub">
@@ -92,7 +108,7 @@ export default function TickerDetail({ stock, journal }: Props) {
           </div>
           <div className="rows">
             {stock.conds.map((c) => (
-              <div className="row" key={c.id}>
+              <HoldRow key={c.id} copyText={c.text}>
                 <button
                   className="check"
                   role="checkbox"
@@ -110,7 +126,7 @@ export default function TickerDetail({ stock, journal }: Props) {
                 >
                   <X size={14} />
                 </button>
-              </div>
+              </HoldRow>
             ))}
           </div>
           <div className="add-row">
@@ -132,7 +148,7 @@ export default function TickerDetail({ stock, journal }: Props) {
           </h6>
           <div className="rows">
             {stock.facts.map((f) => (
-              <div className="row" key={f.id}>
+              <HoldRow key={f.id} copyText={`${f.label}: ${f.value}`}>
                 <span className="row-label">{f.label}</span>
                 <span className="row-text">{f.value}</span>
                 <button
@@ -142,7 +158,7 @@ export default function TickerDetail({ stock, journal }: Props) {
                 >
                   <X size={14} />
                 </button>
-              </div>
+              </HoldRow>
             ))}
           </div>
           <div className="add-row">

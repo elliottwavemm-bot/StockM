@@ -14,6 +14,15 @@ kept in [`design/`](#design-source).
 - **New ticker** — symbol, name, market (SET / US / Crypto), reference price and a first
   entry condition. The symbol is upper-cased and the price accepts `1,240`.
 
+Press and hold to copy: a watchlist card gives you its headline, a condition or a factor
+row gives you its own line, and the header on the detail screen gives you the whole entry
+— conditions ticked or not, factors, and the note — ready to paste into a chat. Holding a
+checkbox or a remove icon does nothing, so those still behave normally, and a hold that
+turns into a scroll is called off.
+
+The page never rescales: no pinch, no double-tap zoom, and no lurch when a field takes
+focus.
+
 Everything is stored in the browser's `localStorage` under `stockm.journal.v1` — no
 account, no server, and nothing leaves the device. The first visit is seeded with four
 example tickers.
@@ -87,6 +96,9 @@ src/
   store.ts            useJournal() — the ticker list and every mutation, persisted
   types.ts            Stock/Condition/Fact, plus price, change and readiness formatting
   seed.ts             first-run example tickers
+  useLongPress.ts     press-and-hold gesture, ignoring nested buttons and scrolls
+  copy.tsx            clipboard write + the confirmation toast
+  share.ts            the plain text a copied ticker turns into
   app.css             screen layout and the app shell
   screens/            Watchlist, TickerDetail, NewTicker
 public/               PWA icons, copied to dist/ as-is
@@ -100,6 +112,11 @@ single source of truth for the look: retune it there and the app follows. A buil
 transform drops that file's Google Fonts `@import`, since the app bundles the same Inter
 weights from `@fontsource` to stay offline-capable — the design file itself is untouched.
 Icons are Phosphor, imported as React components so only the handful in use gets bundled.
+
+Holding the scale still takes two things, because Safari ignores `user-scalable=no` in a
+normal tab: the viewport meta pins it in standalone mode, and the form controls are set to
+16px, which is what actually stops iOS zooming in on a focused field. `touch-action:
+manipulation` drops double-tap zoom.
 
 <a id="design-source"></a>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CopyProvider } from "./copy";
 import { go, useRoute } from "./router";
 import { useJournal } from "./store";
 import NewTicker from "./screens/NewTicker";
@@ -8,7 +9,7 @@ import { SORTS, type Sort, type Status } from "./types";
 
 type Filter = "All" | Status;
 
-export default function App() {
+function Screens() {
   const journal = useJournal();
   const route = useRoute();
   const [filter, setFilter] = useState<Filter>("All");
@@ -55,5 +56,13 @@ export default function App() {
         onCycleSort={() => setSort(SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length])}
       />
     </main>
+  );
+}
+
+export default function App() {
+  return (
+    <CopyProvider>
+      <Screens />
+    </CopyProvider>
   );
 }
