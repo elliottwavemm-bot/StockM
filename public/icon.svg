@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Stock Entry Journal">
+  <rect width="512" height="512" fill="#161826"/>
+  <g fill="none" stroke="#968ae0" stroke-width="46" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M132 268 L210 346 L380 166"/>
+    <path d="M380 240 L380 166 L310 166"/>
+  </g>
+</svg>
